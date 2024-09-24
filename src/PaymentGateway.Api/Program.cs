@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 
 using PaymentGateway.Api.Bootstrap;
+using PaymentGateway.Api.Middleware;
 using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Validators;
 using PaymentGateway.Processor.Configuration;
@@ -26,6 +27,9 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<PostPaymentRequest>, PostPaymentRequestValidator>();
 
 var app = builder.Build();
+
+// Exception middleware
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

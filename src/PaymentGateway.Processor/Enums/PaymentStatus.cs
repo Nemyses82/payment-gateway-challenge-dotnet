@@ -2,8 +2,8 @@ namespace PaymentGateway.Processor.Enums;
 
 public enum PaymentStatus
 {
-    Pending,
-    Authorized,
-    Declined,
-    Rejected
+    Pending = 0,
+    Authorized = 1,
+    Declined = 2,
+    Rejected = 3
 }

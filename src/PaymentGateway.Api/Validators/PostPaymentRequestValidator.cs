@@ -21,7 +21,7 @@ public class PostPaymentRequestValidator : AbstractValidator<PostPaymentRequest>
 
         RuleFor(x => x.ExpiryYear)
             .NotEmpty().WithMessage("ExpiryYear cannot be empty or null.")
-            .Must(x => x >= DateTime.Now.Year).WithMessage("ExpiryYear must be greater or equal to DateTime.Now year.");
+            .Must(x => x >= DateTime.Now.Year).WithMessage("ExpiryYear must be greater or equal to current year date.");
 
         RuleFor(x => x).Must(NotBeExpiredCard)
             .OverridePropertyName("PostPaymentRequest:CardExpired")
@@ -30,8 +30,8 @@ public class PostPaymentRequestValidator : AbstractValidator<PostPaymentRequest>
 
         RuleFor(x => x.Currency)
             .NotEmpty().WithMessage("Currency cannot be empty or null.")
-            .Must(x => new List<string> { "GBP", "EUR", "CHF" }.Contains(x))
-            .WithMessage("Currency must contain only GBP, EUR or CHF.");
+            .Must(x => new List<string> { "GBP", "EUR", "USD" }.Contains(x))
+            .WithMessage("Currency must contain only GBP, EUR or USD.");
 
         RuleFor(x => x.Amount)
             .NotEmpty().WithMessage("Amount cannot be empty or null.");

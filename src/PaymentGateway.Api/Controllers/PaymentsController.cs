@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+
+using Microsoft.AspNetCore.Mvc;
 
 using PaymentGateway.Api.Exceptions;
 using PaymentGateway.Api.Models.Requests;
@@ -27,7 +29,8 @@ public class PaymentsController(IPaymentsProvider paymentsProvider) : Controller
         }
         catch (PaymentNotFoundException)
         {
-            return NotFound();
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
+            throw;
         }
     }
 }
