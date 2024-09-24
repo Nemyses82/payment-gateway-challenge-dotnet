@@ -14,6 +14,9 @@ public class PaymentsController(PaymentsRepository paymentsRepository) : Control
     {
         var payment = paymentsRepository.Get(id);
 
+        if (payment is null)
+            return NotFound();
+        
         return new OkObjectResult(payment);
     }
 }
