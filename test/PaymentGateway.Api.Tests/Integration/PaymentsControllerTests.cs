@@ -1,19 +1,23 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+
+using NUnit.Framework;
 
 using PaymentGateway.Api.Controllers;
 using PaymentGateway.Api.Models.Responses;
 using PaymentGateway.Api.Services;
 
-namespace PaymentGateway.Api.Tests;
+namespace PaymentGateway.Api.Tests.Integration;
 
+[TestFixture]
 public class PaymentsControllerTests
 {
     private readonly Random _random = new();
     
-    [Fact]
+    [Test]
     public async Task RetrievesAPaymentSuccessfully()
     {
         // Arrange
@@ -41,11 +45,11 @@ public class PaymentsControllerTests
         var paymentResponse = await response.Content.ReadFromJsonAsync<PostPaymentResponse>();
         
         // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotNull(paymentResponse);
+        Assert.Equals(HttpStatusCode.OK, response.StatusCode);
+        Assert.That(paymentResponse, Is.Not.Null);
     }
 
-    [Fact]
+    [Test]
     public async Task Returns404IfPaymentNotFound()
     {
         // Arrange
@@ -56,6 +60,6 @@ public class PaymentsControllerTests
         var response = await client.GetAsync($"/api/Payments/{Guid.NewGuid()}");
         
         // Assert
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equals(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

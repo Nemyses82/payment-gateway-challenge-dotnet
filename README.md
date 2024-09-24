@@ -7,7 +7,7 @@ This is the .NET version of the Payment Gateway challenge. If you haven't alread
 src/
     PaymentGateway.Api - a skeleton ASP.NET Core Web API
 test/
-    PaymentGateway.Api.Tests - an empty xUnit test project
+    PaymentGateway.Api.Tests - an empty nUnit test project
 imposters/ - contains the bank simulator configuration. Don't change this
 
 .editorconfig - don't change this. It ensures a consistent set of rules for submissions when reformatting code
