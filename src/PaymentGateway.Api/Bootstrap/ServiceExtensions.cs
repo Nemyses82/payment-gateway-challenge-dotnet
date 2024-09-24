@@ -14,7 +14,7 @@ public static class ServiceExtensions
     {
         services.AddSingleton<IPaymentsRepository, MemoryPaymentsRepository>();
         services.AddSingleton<IPaymentsProvider, PaymentsProvider>();
-        
+
         services.AddHttpClient<IPaymentBankClient, PaymentBankClient>()
             .AddStandardResilienceHandler(options =>
             {
@@ -25,7 +25,7 @@ public static class ServiceExtensions
                     BackoffType = DelayBackoffType.Exponential,
                     OnRetry = OnRetry
                 };
-            });                
+            });
     }
 
     private static ValueTask OnRetry(OnRetryArguments<HttpResponseMessage> arg)

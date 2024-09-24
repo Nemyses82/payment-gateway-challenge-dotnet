@@ -1,7 +1,6 @@
 ﻿using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
 using PaymentGateway.Processor.Enums;
-using PaymentGateway.Processor.Extensions;
 using PaymentGateway.Processor.Models;
 
 namespace PaymentGateway.Api.Extensions;
@@ -11,7 +10,7 @@ public static class PaymentModelExtension
     public static GetPaymentResponse ToGetPaymentResponse(this Payment payment) => new()
     {
         Id = payment.Id,
-        Amount = payment.Amount.ToMinorCurrencyUnits(),
+        Amount = payment.Amount,
         ExpiryMonth = payment.PaymentDetails.CardDetails.ExpiryMonth,
         ExpiryYear = payment.PaymentDetails.CardDetails.ExpiryYear,
         CardNumberLastFour = payment.PaymentDetails.CardDetails.GetCardNumberLastFour(),

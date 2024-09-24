@@ -32,7 +32,8 @@ public class PaymentsProviderTests
         _paymentBankClient = new Mock<IPaymentBankClient>();
         _paymentsRepository = new Mock<IPaymentsRepository>();
 
-        _sut = new PaymentsProvider(_paymentBankClient.Object, _paymentsRepository.Object, NullLogger<PaymentsProvider>.Instance);
+        _sut = new PaymentsProvider(_paymentBankClient.Object, _paymentsRepository.Object,
+            NullLogger<PaymentsProvider>.Instance);
     }
 
     [Test]

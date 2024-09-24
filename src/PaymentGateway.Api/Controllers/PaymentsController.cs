@@ -16,10 +16,10 @@ public class PaymentsController(IPaymentsProvider paymentsProvider) : Controller
     public async Task<IActionResult> CreatePaymentAsync([FromBody] PostPaymentRequest request)
     {
         var paymentResponse = await paymentsProvider.CreatePaymentAsync(request);
-        return Ok(paymentResponse);
+        return CreatedAtRoute("GetPaymentAsync", new { id = paymentResponse.Id }, paymentResponse);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = "GetPaymentAsync")]
     public async Task<IActionResult> GetPaymentAsync(Guid id)
     {
         try

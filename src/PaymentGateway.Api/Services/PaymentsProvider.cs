@@ -16,7 +16,10 @@ public interface IPaymentsProvider
 /// <summary>
 /// This provider wants to be an abstraction layer to do business logic, without polluting the controller
 /// </summary>
-public class PaymentsProvider(IPaymentBankClient paymentBankClient, IPaymentsRepository repository, ILogger<PaymentsProvider> logger) : IPaymentsProvider
+public class PaymentsProvider(
+    IPaymentBankClient paymentBankClient,
+    IPaymentsRepository repository,
+    ILogger<PaymentsProvider> logger) : IPaymentsProvider
 {
     public Task<GetPaymentResponse> GetPayment(Guid id)
     {

@@ -1,13 +1,16 @@
 ﻿using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 
+using FluentAssertions;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 
+using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
-using PaymentGateway.Processor.Services;
+using PaymentGateway.Processor.Enums;
 
 namespace PaymentGateway.Api.Tests.Integration.Controllers;
 
@@ -43,47 +46,89 @@ public class PaymentsControllerTests
     public async Task Should_Create_Payment()
     {
         // Arrange
-        var payment = new PostPaymentResponse
+        var payment = new PostPaymentRequest
         {
-            Id = Guid.NewGuid(),
-            ExpiryYear = _random.Next(2023, 2030),
-            ExpiryMonth = _random.Next(1, 12),
-            Amount = _random.Next(1, 10000),
-            CardNumberLastFour = _random.Next(1111, 9999),
-            Currency = "GBP"
+            CardNumber = "2222405343248877",
+            ExpiryYear = 2025,
+            ExpiryMonth = 4,
+            Amount = 1,
+            Currency = "GBP",
+            Cvv = "123"
         };
 
         // Act
         var response = await _client.PostAsync(UriPath, CreatePaymentRequestContent(payment));
 
         // Arrange
-        var repository = _factory.Services.GetRequiredService<IPaymentsRepository>();
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        var paymentResponse = await response.Content.ReadFromJsonAsync<PostPaymentResponse>();
+        paymentResponse.Should().NotBeNull();
+        response.Headers.Location!.AbsolutePath.Should().Be($"/api/payments/{paymentResponse.Id}");
     }
 
-    // [Test]
-    // public async Task Should_Return_A_Payment_When_A_Valid_Request_Is_Provided()
-    // {
-    //     // Arrange
-    //     var payment = new PostPaymentResponse
-    //     {
-    //         Id = Guid.NewGuid(),
-    //         ExpiryYear = _random.Next(2023, 2030),
-    //         ExpiryMonth = _random.Next(1, 12),
-    //         Amount = _random.Next(1, 10000),
-    //         CardNumberLastFour = _random.Next(1111, 9999),
-    //         Currency = "GBP"
-    //     };
-    //     var repository = _factory.Services.GetRequiredService<IPaymentsRepository>();
-    //     repository.Add(payment);
-    //
-    //     // Act
-    //     var response = await _client.GetAsync($"{UriPath}{payment.Id}");
-    //     var paymentResponse = await response.Content.ReadFromJsonAsync<PostPaymentResponse>();
-    //
-    //     // Assert
-    //     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-    //     Assert.That(paymentResponse, Is.Not.Null);
-    // }
+    [Test]
+    public async Task Should_Return_A_Payment_Details_When_A_Payment_Is_Existing_And_Authorized()
+    {
+        // Arrange
+        var payment = new PostPaymentRequest
+        {
+            CardNumber = "2222405343248877",
+            ExpiryYear = 2025,
+            ExpiryMonth = 4,
+            Amount = 1,
+            Currency = "GBP",
+            Cvv = "123"
+        };
+        var paymentResult = await _client.PostAsync(UriPath, CreatePaymentRequestContent(payment));
+        var paymentResponse = await paymentResult.Content.ReadFromJsonAsync<PostPaymentResponse>();
+
+        // Act
+        var paymentDetailsResult = await _client.GetAsync($"{UriPath}{paymentResponse.Id}");
+        var paymentDetailsResponse = await paymentDetailsResult.Content.ReadFromJsonAsync<GetPaymentResponse>();
+
+        // Assert
+        paymentDetailsResult.StatusCode.Should().Be(HttpStatusCode.OK);
+        paymentDetailsResponse.Should().NotBeNull();
+        paymentDetailsResponse.Id.Should().Be(paymentResponse.Id);
+        paymentDetailsResponse.CardNumberLastFour.Should().Be(8877);
+        paymentDetailsResponse.ExpiryYear.Should().Be(2025);
+        paymentDetailsResponse.ExpiryMonth.Should().Be(4);
+        paymentDetailsResponse.Amount.Should().Be(1);
+        paymentDetailsResponse.Currency.Should().Be("GBP");
+        paymentDetailsResponse.Status.Should().Be(PaymentStatus.Authorized);
+    }
+
+    [Test]
+    public async Task Should_Return_A_Payment_Details_When_A_Payment_Is_Existing_And_Declined()
+    {
+        // Arrange
+        var payment = new PostPaymentRequest
+        {
+            CardNumber = "2222405343248112",
+            ExpiryYear = 2026,
+            ExpiryMonth = 1,
+            Amount = 600,
+            Currency = "USD",
+            Cvv = "456"
+        };
+        var paymentResult = await _client.PostAsync(UriPath, CreatePaymentRequestContent(payment));
+        var paymentResponse = await paymentResult.Content.ReadFromJsonAsync<PostPaymentResponse>();
+
+        // Act
+        var paymentDetailsResult = await _client.GetAsync($"{UriPath}{paymentResponse.Id}");
+        var paymentDetailsResponse = await paymentDetailsResult.Content.ReadFromJsonAsync<GetPaymentResponse>();
+
+        // Assert
+        paymentDetailsResult.StatusCode.Should().Be(HttpStatusCode.OK);
+        paymentDetailsResponse.Should().NotBeNull();
+        paymentDetailsResponse.Id.Should().Be(paymentResponse.Id);
+        paymentDetailsResponse.CardNumberLastFour.Should().Be(8112);
+        paymentDetailsResponse.ExpiryYear.Should().Be(2026);
+        paymentDetailsResponse.ExpiryMonth.Should().Be(1);
+        paymentDetailsResponse.Amount.Should().Be(600);
+        paymentDetailsResponse.Currency.Should().Be("USD");
+        paymentDetailsResponse.Status.Should().Be(PaymentStatus.Declined);
+    }
 
     [Test]
     public async Task Returns404IfPaymentNotFound()
@@ -97,8 +142,8 @@ public class PaymentsControllerTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
 
-    private static StringContent CreatePaymentRequestContent(PostPaymentResponse paymentResponse) =>
-        new(JsonSerializer.Serialize(paymentResponse), Encoding.UTF8, "application/json");
+    private static StringContent CreatePaymentRequestContent(PostPaymentRequest paymentRequest) =>
+        new(JsonSerializer.Serialize(paymentRequest), Encoding.UTF8, "application/json");
 
     [TearDown]
     public void TearDown() => _client.Dispose();
