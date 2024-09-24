@@ -11,7 +11,7 @@ namespace PaymentGateway.Api.Controllers;
 public class PaymentsController(IPaymentsProvider paymentsProvider) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreatePaymentAsync(PostPaymentRequest request)
+    public async Task<IActionResult> CreatePaymentAsync([FromBody]PostPaymentRequest request)
     {
         var paymentResponse = await paymentsProvider.CreatePaymentAsync(request);
         return Ok(paymentResponse);

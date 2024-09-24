@@ -27,7 +27,7 @@ public class PaymentBankClient(HttpClient httpClient, ServiceConfig serviceConfi
     {
         var requestBody = new BankPaymentRequest(
             payment.PaymentDetails.CardDetails.CardNumber,
-            $"{payment.PaymentDetails.CardDetails.ExpiryMonth}/{payment.PaymentDetails.CardDetails.ExpiryYear}",
+            $"{payment.PaymentDetails.CardDetails.ExpiryMonth:00}/{payment.PaymentDetails.CardDetails.ExpiryYear}",
             payment.Currency,
             payment.Amount.ToMinorCurrencyUnits(),
             payment.PaymentDetails.CardDetails.CVV
