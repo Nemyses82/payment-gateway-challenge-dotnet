@@ -4,6 +4,7 @@ using FluentAssertions;
 
 using Moq;
 
+using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
 using PaymentGateway.Api.Services;
 using PaymentGateway.Processor.Models;
@@ -50,5 +51,20 @@ public class PaymentsProviderTests
         
         paymentResponse.Should().NotBeNull();
         paymentResponse.Id.Should().Be(paymentId);
+        paymentResponse.CardNumberLastFour.Should().Be(5678);
     }
+
+    [Test]
+    public async Task Should_Return_Payment_From_Repository_When_A_Payment_Is_Created()
+    {
+        var postPaymentRequest = _fixture.Build<PostPaymentRequest>()
+            .With(x => x.CardNumber, "12345678").Create();
+        var bankPaymentResponse = _fixture.Create<BankPaymentResponse>();
+        _paymentBankClient.Setup(x => x.IssuePaymentAsync(It.IsAny<Payment>())).ReturnsAsync(bankPaymentResponse);
+
+        var paymentResponse = await _sut.CreatePaymentAsync(postPaymentRequest);
+        
+        paymentResponse.Should().NotBeNull();
+        paymentResponse.CardNumberLastFour.Should().Be(5678);        
+    }    
 }
