@@ -1,7 +1,8 @@
-namespace PaymentGateway.Api.Models;
+namespace PaymentGateway.Processor.Enums;
 
 public enum PaymentStatus
 {
+    Pending,
     Authorized,
     Declined,
     Rejected

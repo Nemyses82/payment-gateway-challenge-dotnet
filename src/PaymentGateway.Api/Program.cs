@@ -1,6 +1,10 @@
-using PaymentGateway.Api.Services;
+using PaymentGateway.Api.Bootstrap;
+using PaymentGateway.Processor.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var settings = builder.Configuration.GetSection("Service").Get<ServiceConfig>();
+builder.Services.AddSingleton(settings);
 
 // Add services to the container.
 
@@ -9,7 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<PaymentsRepository>();
+// bootstrap
+builder.Services.AddPaymentServices();
 
 var app = builder.Build();
 
@@ -27,3 +32,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
