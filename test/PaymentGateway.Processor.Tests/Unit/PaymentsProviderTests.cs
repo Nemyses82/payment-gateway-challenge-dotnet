@@ -2,6 +2,8 @@
 
 using FluentAssertions;
 
+using Microsoft.Extensions.Logging.Abstractions;
+
 using Moq;
 
 using PaymentGateway.Api.Models.Requests;
@@ -30,7 +32,7 @@ public class PaymentsProviderTests
         _paymentBankClient = new Mock<IPaymentBankClient>();
         _paymentsRepository = new Mock<IPaymentsRepository>();
 
-        _sut = new PaymentsProvider(_paymentBankClient.Object, _paymentsRepository.Object);
+        _sut = new PaymentsProvider(_paymentBankClient.Object, _paymentsRepository.Object, NullLogger<PaymentsProvider>.Instance);
     }
 
     [Test]
