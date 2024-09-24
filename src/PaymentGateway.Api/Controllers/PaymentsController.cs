@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using FluentValidation.Results;
+
+using Microsoft.AspNetCore.Mvc;
 
 using PaymentGateway.Api.Exceptions;
+using PaymentGateway.Api.Extensions;
 using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Services;
 

@@ -1,4 +1,9 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+
 using PaymentGateway.Api.Bootstrap;
+using PaymentGateway.Api.Models.Requests;
+using PaymentGateway.Api.Validators;
 using PaymentGateway.Processor.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +20,10 @@ builder.Services.AddSwaggerGen();
 
 // bootstrap
 builder.Services.AddPaymentServices();
+
+// Validators
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<IValidator<PostPaymentRequest>, PostPaymentRequestValidator>();
 
 var app = builder.Build();
 

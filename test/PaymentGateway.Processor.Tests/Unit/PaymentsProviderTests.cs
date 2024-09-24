@@ -18,11 +18,12 @@ public class PaymentsProviderTests
 
     private Fixture _fixture;
 
+    [OneTimeSetUp]
+    public void OneTimeSetUp() => _fixture = new Fixture();    
+    
     [SetUp]
     public void SetUp()
     {
-        _fixture = new Fixture();
-
         _paymentBankClient = new Mock<IPaymentBankClient>();
         _paymentsRepository = new Mock<IPaymentsRepository>();
 

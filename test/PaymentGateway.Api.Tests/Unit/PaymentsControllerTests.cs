@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NUnit.Framework;
 using PaymentGateway.Api.Controllers;
 using PaymentGateway.Api.Exceptions;
 using PaymentGateway.Api.Models.Responses;
@@ -19,10 +18,12 @@ public class PaymentsControllerTests
 
     private Fixture _fixture;
 
+    [OneTimeSetUp]
+    public void OneTimeSetUp() => _fixture = new Fixture();    
+    
     [SetUp]
     public void SetUp()
     {
-        _fixture = new Fixture();
         _paymentsProvider = new Mock<IPaymentsProvider>();
         _sut = new PaymentsController(_paymentsProvider.Object);
     }
