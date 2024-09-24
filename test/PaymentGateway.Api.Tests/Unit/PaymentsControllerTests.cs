@@ -1,7 +1,11 @@
 ﻿using AutoFixture;
+
 using FluentAssertions;
+
 using Microsoft.AspNetCore.Mvc;
+
 using Moq;
+
 using PaymentGateway.Api.Controllers;
 using PaymentGateway.Api.Exceptions;
 using PaymentGateway.Api.Models.Responses;
@@ -19,8 +23,8 @@ public class PaymentsControllerTests
     private Fixture _fixture;
 
     [OneTimeSetUp]
-    public void OneTimeSetUp() => _fixture = new Fixture();    
-    
+    public void OneTimeSetUp() => _fixture = new Fixture();
+
     [SetUp]
     public void SetUp()
     {

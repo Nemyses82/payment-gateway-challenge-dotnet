@@ -1,10 +1,6 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 using PaymentGateway.Api.Exceptions;
-using PaymentGateway.Api.Extensions;
 using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Services;
 
@@ -15,7 +11,7 @@ namespace PaymentGateway.Api.Controllers;
 public class PaymentsController(IPaymentsProvider paymentsProvider) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreatePaymentAsync([FromBody]PostPaymentRequest request)
+    public async Task<IActionResult> CreatePaymentAsync([FromBody] PostPaymentRequest request)
     {
         var paymentResponse = await paymentsProvider.CreatePaymentAsync(request);
         return Ok(paymentResponse);

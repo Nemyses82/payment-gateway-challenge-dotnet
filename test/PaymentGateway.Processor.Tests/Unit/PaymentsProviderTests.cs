@@ -1,6 +1,9 @@
 ﻿using AutoFixture;
+
 using FluentAssertions;
+
 using Moq;
+
 using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Services;
 using PaymentGateway.Processor.Models;
@@ -19,8 +22,8 @@ public class PaymentsProviderTests
     private Fixture _fixture;
 
     [OneTimeSetUp]
-    public void OneTimeSetUp() => _fixture = new Fixture();    
-    
+    public void OneTimeSetUp() => _fixture = new Fixture();
+
     [SetUp]
     public void SetUp()
     {

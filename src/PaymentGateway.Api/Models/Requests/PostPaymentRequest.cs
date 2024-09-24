@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace PaymentGateway.Api.Models.Requests;
+﻿namespace PaymentGateway.Api.Models.Requests;
 
 public class PostPaymentRequest
 {
