@@ -14,9 +14,9 @@ namespace PaymentGateway.Api.Tests.Unit;
 public class PaymentsControllerTests
 {
     private Mock<IPaymentsProvider> _paymentsProvider;
-    
+
     private PaymentsController _sut;
-    
+
     private Fixture _fixture;
 
     [SetUp]
@@ -35,16 +35,16 @@ public class PaymentsControllerTests
         _paymentsProvider.Setup(x => x.GetPayment(paymentId)).ReturnsAsync(paymentResponse).Verifiable();
 
         var actionResult = await _sut.GetPaymentAsync(paymentId);
-        
+
         actionResult.Should().BeAssignableTo<OkObjectResult>();
         var objectResult = actionResult.As<ObjectResult>();
-        
+
         objectResult.Should().NotBeNull();
-        
+
         var resultValue = objectResult.Value;
-        resultValue.Should().BeOfType<GetPaymentResponse>();   
+        resultValue.Should().BeOfType<GetPaymentResponse>();
     }
-    
+
     [Test]
     public async Task Should_Return_NotFound_When_An_PaymentNotFoundException_Is_Raised()
     {
@@ -53,10 +53,10 @@ public class PaymentsControllerTests
             .Throws(new PaymentNotFoundException($"Payment with id {paymentId} not found")).Verifiable();
 
         var actionResult = await _sut.GetPaymentAsync(paymentId);
-        
+
         actionResult.Should().BeAssignableTo<NotFoundResult>();
         var objectResult = actionResult.As<ObjectResult>();
-        
+
         objectResult.Should().BeNull();
-    }    
+    }
 }

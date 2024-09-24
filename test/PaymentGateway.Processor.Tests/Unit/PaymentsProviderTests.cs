@@ -1,11 +1,7 @@
 ﻿using AutoFixture;
-
 using FluentAssertions;
-
 using Moq;
-
 using PaymentGateway.Api.Models.Requests;
-using PaymentGateway.Api.Models.Responses;
 using PaymentGateway.Api.Services;
 using PaymentGateway.Processor.Models;
 using PaymentGateway.Processor.Services;
@@ -17,16 +13,16 @@ public class PaymentsProviderTests
 {
     private Mock<IPaymentBankClient> _paymentBankClient;
     private Mock<IPaymentsRepository> _paymentsRepository;
-    
+
     private PaymentsProvider _sut;
-    
+
     private Fixture _fixture;
 
     [SetUp]
     public void SetUp()
     {
         _fixture = new Fixture();
-        
+
         _paymentBankClient = new Mock<IPaymentBankClient>();
         _paymentsRepository = new Mock<IPaymentsRepository>();
 
@@ -38,9 +34,9 @@ public class PaymentsProviderTests
     {
         var paymentId = Guid.NewGuid();
         var cardDetails = _fixture.Build<CardDetails>()
-            .With(x => x.CardNumber, "12345678").Create();        
+            .With(x => x.CardNumber, "12345678").Create();
         var paymentDetails = _fixture.Build<PaymentDetails>()
-            .With(x => x.CardDetails, cardDetails).Create();        
+            .With(x => x.CardDetails, cardDetails).Create();
         var payment = _fixture.Build<Payment>()
             .With(x => x.Id, paymentId)
             .With(x => x.PaymentDetails, paymentDetails)
@@ -48,7 +44,7 @@ public class PaymentsProviderTests
         _paymentsRepository.Setup(x => x.Get(paymentId)).Returns(payment);
 
         var paymentResponse = await _sut.GetPayment(paymentId);
-        
+
         paymentResponse.Should().NotBeNull();
         paymentResponse.Id.Should().Be(paymentId);
         paymentResponse.CardNumberLastFour.Should().Be(5678);
@@ -63,8 +59,8 @@ public class PaymentsProviderTests
         _paymentBankClient.Setup(x => x.IssuePaymentAsync(It.IsAny<Payment>())).ReturnsAsync(bankPaymentResponse);
 
         var paymentResponse = await _sut.CreatePaymentAsync(postPaymentRequest);
-        
+
         paymentResponse.Should().NotBeNull();
-        paymentResponse.CardNumberLastFour.Should().Be(5678);        
-    }    
+        paymentResponse.CardNumberLastFour.Should().Be(5678);
+    }
 }

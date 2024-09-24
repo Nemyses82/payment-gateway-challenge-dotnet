@@ -28,12 +28,14 @@ public class PaymentsProvider(IPaymentBankClient paymentBankClient, IPaymentsRep
     {
         var payment = request.ToPayment();
         var bankResponse = await paymentBankClient.IssuePaymentAsync(payment);
-        
-        // Here PaymentStatus result is simplified just to Authorized or Declined
-        payment = payment with { Status = bankResponse.IsPaymentAuthorized ? PaymentStatus.Authorized : PaymentStatus.Declined };
-        repository.Add(payment);
-        
-        return payment.ToPostPaymentResponse();
-    } 
-}
 
+        // Here PaymentStatus result is simplified just to Authorized or Declined
+        payment = payment with
+        {
+            Status = bankResponse.IsPaymentAuthorized ? PaymentStatus.Authorized : PaymentStatus.Declined
+        };
+        repository.Add(payment);
+
+        return payment.ToPostPaymentResponse();
+    }
+}

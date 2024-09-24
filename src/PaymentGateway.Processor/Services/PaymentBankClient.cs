@@ -22,7 +22,7 @@ public class PaymentBankClient(HttpClient httpClient, ServiceConfig serviceConfi
         PropertyNameCaseInsensitive = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
-    
+
     public async Task<BankPaymentResponse> IssuePaymentAsync(Payment payment)
     {
         var requestBody = new BankPaymentRequest(
@@ -31,23 +31,29 @@ public class PaymentBankClient(HttpClient httpClient, ServiceConfig serviceConfi
             payment.Currency,
             payment.Amount.ToMinorCurrencyUnits(),
             payment.PaymentDetails.CardDetails.CVV
-            );
-        
+        );
+
         var response = await httpClient.PostAsJsonAsync(serviceConfig.PaymentIssuerBankBaseUrl, requestBody, Options);
         response.EnsureSuccessStatusCode();
-        
+
         var responseBody = await response.Content.ReadAsStringAsync();
-        
-        return JsonSerializer.Deserialize<BankPaymentResponse?>(responseBody) ?? throw new PaymentBankClientException("Error while processing payment request");
-    }    
+
+        return JsonSerializer.Deserialize<BankPaymentResponse?>(responseBody) ??
+               throw new PaymentBankClientException("Error while processing payment request");
+    }
 }
 
 public sealed record BankPaymentRequest(
-    [property: JsonPropertyName("card_number")]string CardNumber,
-    [property: JsonPropertyName("expiry_date")]string ExpiryDate,
+    [property: JsonPropertyName("card_number")]
+    string CardNumber,
+    [property: JsonPropertyName("expiry_date")]
+    string ExpiryDate,
     string Currency,
     int Amount,
     string CVV);
+
 public sealed record BankPaymentResponse(
-    [property: JsonPropertyName("authorized")]bool IsPaymentAuthorized,
-    [property: JsonPropertyName("authorization_code")]string AuthorizationCode);
+    [property: JsonPropertyName("authorized")]
+    bool IsPaymentAuthorized,
+    [property: JsonPropertyName("authorization_code")]
+    string AuthorizationCode);

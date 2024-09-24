@@ -2,9 +2,7 @@
 
 using PaymentGateway.Api.Exceptions;
 using PaymentGateway.Api.Models.Requests;
-using PaymentGateway.Api.Models.Responses;
 using PaymentGateway.Api.Services;
-using PaymentGateway.Processor.Models;
 
 namespace PaymentGateway.Api.Controllers;
 
@@ -18,7 +16,7 @@ public class PaymentsController(IPaymentsProvider paymentsProvider) : Controller
         var paymentResponse = await paymentsProvider.CreatePaymentAsync(request);
         return Ok(paymentResponse);
     }
-    
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetPaymentAsync(Guid id)
     {
