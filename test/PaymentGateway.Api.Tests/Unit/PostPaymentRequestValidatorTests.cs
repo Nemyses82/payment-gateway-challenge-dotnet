@@ -75,7 +75,7 @@ public class PostPaymentRequestValidatorTests
 
         validationResult.IsValid.Should().BeFalse();
         validationResult.Errors.Should().Contain(failure =>
-            failure.ErrorMessage == "ExpiryYear must be greater or equal to DateTime.Now year.");
+            failure.ErrorMessage == "ExpiryYear must be greater or equal to current year date.");
     }
 
     [Test]
@@ -100,7 +100,7 @@ public class PostPaymentRequestValidatorTests
 
         validationResult.IsValid.Should().BeFalse();
         validationResult.Errors.Should()
-            .Contain(failure => failure.ErrorMessage == "Currency must contain only GBP, EUR or CHF.");
+            .Contain(failure => failure.ErrorMessage == "Currency must contain only GBP, EUR or USD.");
     }
 
     [Test]

@@ -59,9 +59,10 @@ public class PaymentsControllerTests
 
         var actionResult = await _sut.GetPaymentAsync(paymentId);
 
-        actionResult.Should().BeAssignableTo<NotFoundResult>();
+        actionResult.Should().BeAssignableTo<NotFoundObjectResult>();
         var objectResult = actionResult.As<ObjectResult>();
 
-        objectResult.Should().BeNull();
+        objectResult.Should().NotBeNull();
+        objectResult.Value.Should().Be($"Payment with id {paymentId} not found");
     }
 }
