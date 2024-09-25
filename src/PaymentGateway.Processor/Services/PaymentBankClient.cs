@@ -25,21 +25,28 @@ public class PaymentBankClient(HttpClient httpClient, ServiceConfig serviceConfi
 
     public async Task<BankPaymentResponse> IssuePaymentAsync(Payment payment)
     {
-        var requestBody = new BankPaymentRequest(
-            payment.PaymentDetails.CardDetails.CardNumber,
-            $"{payment.PaymentDetails.CardDetails.ExpiryMonth:00}/{payment.PaymentDetails.CardDetails.ExpiryYear}",
-            payment.Currency,
-            payment.Amount.ToMinorCurrencyUnits(),
-            payment.PaymentDetails.CardDetails.CVV
-        );
+        try
+        {
+            var requestBody = new BankPaymentRequest(
+                payment.PaymentDetails.CardDetails.CardNumber,
+                $"{payment.PaymentDetails.CardDetails.ExpiryMonth:00}/{payment.PaymentDetails.CardDetails.ExpiryYear}",
+                payment.Currency,
+                payment.Amount.ToMinorCurrencyUnits(),
+                payment.PaymentDetails.CardDetails.CVV
+            );
 
-        var response = await httpClient.PostAsJsonAsync(serviceConfig.PaymentIssuerBankBaseUrl, requestBody, Options);
-        response.EnsureSuccessStatusCode();
+            var response =
+                await httpClient.PostAsJsonAsync(serviceConfig.PaymentIssuerBankBaseUrl, requestBody, Options);
+            response.EnsureSuccessStatusCode();
 
-        var responseBody = await response.Content.ReadAsStringAsync();
+            var responseBody = await response.Content.ReadAsStringAsync();
 
-        return JsonSerializer.Deserialize<BankPaymentResponse?>(responseBody) ??
-               throw new PaymentBankClientException("Error while processing payment request");
+            return JsonSerializer.Deserialize<BankPaymentResponse>(responseBody)!;
+        }
+        catch (Exception e)
+        {
+            throw new PaymentBankClientException("Unexpected error while contacting Bank Client Simulator", e);
+        }
     }
 }
 

@@ -11,7 +11,7 @@ using PaymentGateway.Api.Services;
 using PaymentGateway.Processor.Models;
 using PaymentGateway.Processor.Services;
 
-namespace PaymentGateway.Processor.Tests.Unit;
+namespace PaymentGateway.Api.Tests.Unit;
 
 [TestFixture]
 public class PaymentsProviderTests

@@ -1,3 +1,3 @@
 ﻿namespace PaymentGateway.Processor.Exceptions;
 
-public class PaymentBankClientException(string message) : Exception(message);
+public class PaymentBankClientException(string message, Exception exception) : Exception(message, exception);
