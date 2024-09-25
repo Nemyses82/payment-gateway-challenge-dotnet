@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
+
 namespace PaymentGateway.Processor.Enums;
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum PaymentStatus
 {
     Pending = 0,
